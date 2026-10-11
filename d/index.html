@@ -1,0 +1,40 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Northwind Demo Shop</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font:16px/1.4 Arial,Helvetica,sans-serif;background:#f3f4f8;color:#1b1e2e}
+header{background:#1b1e2e;color:#fff;padding:16px 28px;display:flex;align-items:center;justify-content:space-between}
+header b{font-size:22px;letter-spacing:.5px}header .cart{background:#ffd60a;color:#1b1e2e;border-radius:20px;padding:6px 14px;font-weight:700;cursor:pointer;border:0;font-size:16px}
+main{max-width:980px;margin:28px auto;padding:0 20px}
+.card{background:#fff;border-radius:14px;padding:26px;box-shadow:0 2px 14px rgba(0,0,0,.08)}
+h1{margin:0 0 16px;font-size:26px}label{display:block;margin:12px 0 4px;font-weight:700}
+input[type=text],input[type=password]{width:100%;padding:12px;border:1px solid #c9ccd8;border-radius:8px;font-size:16px}
+button.primary{background:#2a3df0;color:#fff;border:0;padding:12px 22px;border-radius:8px;font-size:16px;cursor:pointer;margin-top:16px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.item{background:#fff;border-radius:14px;padding:18px;box-shadow:0 2px 14px rgba(0,0,0,.08);position:relative}
+.item .pic{height:110px;border-radius:10px;background:linear-gradient(135deg,#dfe3ff,#f6e7ff);margin-bottom:12px}.price{font-weight:700;margin:6px 0 12px}
+.item button{background:#fff;border:2px solid #2a3df0;color:#2a3df0;padding:9px 14px;border-radius:8px;font-weight:700;cursor:pointer}
+.item button.top{position:absolute;right:14px;top:14px}
+.hint{color:#5d6272;font-size:14px;margin-top:18px}.err{background:#ffe3e1;color:#a02a22;padding:10px 14px;border-radius:8px;margin-top:14px}
+.row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #e6e8f0}.hide{display:none}
+</style></head><body>
+<header><b>Northwind Demo Shop</b><button class="cart hide" id="cartbtn" onclick="show('cart')">Cart <span id="badge">0</span></button></header>
+<main>
+<section id="login" class="card"><h1>Login</h1><label for="u">Username</label><input type="text" id="u" name="user-name" autocomplete="off"><label for="p">Password</label><input type="password" id="p" name="password" autocomplete="off"><button class="primary" onclick="doLogin()">Login</button><div id="lerr" class="err hide"></div>
+<p class="hint">Demo logins (public, for testing): demo_user / demo_pass. Locked account: locked_user / demo_pass.</p></section>
+<section id="products" class="hide"><h1>Products</h1><div class="grid" id="grid"></div></section>
+<section id="cart" class="card hide"><h1>Your Cart</h1><div id="cartlist"></div><button class="primary" onclick="show('info')">Checkout</button></section>
+<section id="info" class="card hide"><h1>Your Information</h1><label for="fn">Given name</label><input type="text" id="fn"><label for="ln">Last Name</label><input type="text" id="ln"><label for="zip">Zip/Postal Code</label><input type="text" id="zip"><button class="primary" onclick="show('over')">Continue</button></section>
+<section id="over" class="card hide"><h1>Overview</h1><div id="overlist"></div><button class="primary" onclick="show('done')">Finish</button></section>
+<section id="done" class="card hide"><h1>Thank you for your order!</h1><p>Your order has been dispatched. This is a demo shop, nothing is real.</p></section>
+</main>
+<script>
+const ITEMS=[["Trail Backpack","29.99"],["Bike Light","9.99"],["Fleece Jacket","49.99"]];let cart=[];
+const $=id=>document.getElementById(id);
+function show(id){["login","products","cart","info","over","done"].forEach(s=>$(s).classList.toggle("hide",s!==id));
+ if(id==="cart")$("cartlist").innerHTML=cart.length?cart.map(n=>'<div class="row"><span>'+n+'</span></div>').join(""):"<p>Your cart is empty.</p>";
+ if(id==="over")$("overlist").innerHTML=cart.map(n=>'<div class="row"><span>'+n+'</span></div>').join("");}
+function doLogin(){const u=$("u").value,p=$("p").value;
+ if(u==="locked_user"){const e=$("lerr");e.textContent="Sorry, this user has been locked out.";e.classList.remove("hide");return}
+ if(u==="demo_user"&&p==="demo_pass"){$("cartbtn").classList.remove("hide");show("products")}
+ else{const e=$("lerr");e.textContent="Username and password do not match any user.";e.classList.remove("hide")}}
+$("grid").innerHTML=ITEMS.map((it,i)=>'<div class="item"><div class="pic"></div><div><b>'+it[0]+'</b></div><div class="price">$'+it[1]+'</div><button class="" id="add'+i+'" onclick="add('+i+')">Add to cart</button></div>').join("");
+function add(i){cart.push(ITEMS[i][0]);$("badge").textContent=cart.length}
+</script></body></html>
